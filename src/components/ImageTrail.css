@@ -1,0 +1,454 @@
+/* ===================================================
+   IMAGE TRAIL: DYNAMIC CURSOR-FOLLOWING PHOTO STREAM
+   =================================================== */
+
+.image-trail-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  background-color: #080a0e;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+/* Ambient Radial Vignette & Glow */
+.trail-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 35%, rgba(6, 8, 12, 0.65) 75%, rgba(4, 5, 8, 0.95) 100%);
+  z-index: 5;
+}
+
+.trail-ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(90, 140, 220, 0.05) 0%, rgba(60, 100, 180, 0.015) 50%, transparent 70%);
+  z-index: 4;
+}
+
+/* Center Interactive Guidance */
+.trail-center-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s ease;
+}
+
+.trail-center-hint.hidden {
+  opacity: 0.12;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.trail-hint-badge {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8da4be;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(14px);
+}
+
+.trail-hint-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f1f4f8;
+  margin: 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
+}
+
+.trail-hint-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: #8090a2;
+  margin-top: 8px;
+  letter-spacing: -0.01em;
+}
+
+/* Glowing Interactive Cursor Tracker */
+.trail-cursor-follower {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  margin-top: -11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(130, 185, 255, 0.85);
+  background: radial-gradient(circle, rgba(100, 180, 255, 0.35) 0%, transparent 70%);
+  box-shadow: 0 0 16px rgba(100, 180, 255, 0.6);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+
+/* Cards Layer */
+.trail-cards-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Individual Card DOM Item */
+.trail-card-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.trail-card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8), 0 6px 16px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.2s ease;
+}
+
+.trail-card-image-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+}
+
+.trail-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.trail-card-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.22) 100%);
+  pointer-events: none;
+}
+
+/* Editorial Style */
+.trail-card-item.theme-editorial .trail-card-inner {
+  background: #12151b;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px;
+}
+
+.trail-card-item.theme-editorial .trail-card-image-wrap {
+  border-radius: 8px;
+}
+
+.trail-card-item.theme-editorial .trail-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px 2px 4px;
+}
+
+.trail-card-item.theme-editorial .trail-card-num {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #64b5f6;
+  letter-spacing: 0.1em;
+}
+
+.trail-card-item.theme-editorial .trail-card-meta {
+  text-align: right;
+}
+
+.trail-card-item.theme-editorial .trail-card-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #edf2f7;
+  line-height: 1.1;
+}
+
+.trail-card-item.theme-editorial .trail-card-category {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-size: 0.55rem;
+  color: #798a9c;
+  letter-spacing: 0.06em;
+}
+
+/* Polaroid Style */
+.trail-card-item.theme-polaroid .trail-card-inner {
+  background: #f7f6f2;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 8px 8px 16px 8px;
+  box-shadow: 0 22px 42px -8px rgba(0, 0, 0, 0.85), 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.trail-card-item.theme-polaroid .trail-card-image-wrap {
+  border-radius: 4px;
+}
+
+.trail-card-item.theme-polaroid .trail-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 2px 0 2px;
+}
+
+.trail-card-item.theme-polaroid .trail-card-num {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #3e444c;
+}
+
+.trail-card-item.theme-polaroid .trail-card-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1a1e24;
+}
+
+.trail-card-item.theme-polaroid .trail-card-category {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-size: 0.56rem;
+  color: #636e7b;
+}
+
+/* Minimal Style */
+.trail-card-item.theme-minimal .trail-card-inner {
+  background: #0f1217;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  padding: 0;
+  border-radius: 14px;
+}
+
+.trail-card-item.theme-minimal .trail-card-image-wrap {
+  border-radius: 12px;
+}
+
+.trail-card-item.theme-minimal .trail-card-footer {
+  display: none;
+}
+
+/* Floating Glassmorphic Ambient HUD */
+.trail-hud {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 17, 24, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 8px 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 90;
+  max-width: 95vw;
+}
+
+.trail-hud-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #d1d9e2;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.trail-hud-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.trail-hud-btn.burst-btn {
+  background: linear-gradient(135deg, rgba(80, 160, 255, 0.25) 0%, rgba(140, 90, 255, 0.25) 100%);
+  border-color: rgba(120, 190, 255, 0.4);
+  color: #70c4ff;
+  font-weight: 700;
+}
+
+.trail-hud-btn.burst-btn:hover {
+  background: linear-gradient(135deg, rgba(80, 160, 255, 0.4) 0%, rgba(140, 90, 255, 0.4) 100%);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(100, 180, 255, 0.35);
+}
+
+.trail-hud-divider {
+  width: 1px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sliders */
+.trail-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.trail-hud-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7d8c9d;
+}
+
+.trail-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 78px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.trail-slider:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.trail-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 0 0 8px rgba(130, 180, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.trail-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.trail-slider-badge {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64b5f6;
+  background: rgba(100, 181, 246, 0.12);
+  padding: 2px 7px;
+  border-radius: 6px;
+  min-width: 32px;
+  text-align: center;
+}
+
+/* Style selector pills */
+.trail-style-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.trail-style-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #8c9ba8;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.trail-style-pill:hover {
+  color: #e0e6ed;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.trail-style-pill.selected {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 900px) {
+  .trail-hint-title {
+    font-size: 1.9rem;
+  }
+  .trail-hud {
+    gap: 8px;
+    padding: 6px 12px;
+    bottom: 16px;
+    overflow-x: auto;
+    border-radius: 18px;
+  }
+  .trail-slider {
+    width: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .trail-hint-title {
+    font-size: 1.5rem;
+  }
+  .trail-hint-subtitle {
+    font-size: 0.8rem;
+  }
+  .trail-hud {
+    bottom: 12px;
+    max-width: 92vw;
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+  .trail-hud-btn {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+}

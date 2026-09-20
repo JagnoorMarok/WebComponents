@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500&display=swap');
+
+.focus-slice-container {
+  width: 100%;
+  height: 100%;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 12px;
+  background: var(--bg-dark);
+}
+
+.focus-slice-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 65vh;
+  min-height: 500px;
+  gap: 1.25rem;
+}
+
+.slice-item {
+  position: relative;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: #111;
+}
+
+.slice-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.slice-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.1) 100%);
+  opacity: 0.7;
+  transition: opacity 0.4s ease;
+}
+
+.slice-overlay.active {
+  opacity: 0.8;
+}
+
+.slice-item:hover .slice-overlay {
+  opacity: 0.9;
+}
+
+.slice-content {
+  position: relative;
+  z-index: 2;
+  padding: 3rem;
+  color: #fff;
+  width: 100%;
+  pointer-events: none;
+  min-width: 400px; /* Prevent text wrapping awkwardly during transition */
+}
+
+.slice-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.slice-content p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  max-width: 500px;
+}
+
+.slice-title-vertical {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  z-index: 2;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%) rotate(180deg);
+  opacity: 0.8;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Hide vertical title if the screen is too small */
+@media (max-height: 600px) {
+  .slice-title-vertical {
+    display: none;
+  }
+}

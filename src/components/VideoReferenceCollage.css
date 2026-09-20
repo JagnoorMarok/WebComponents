@@ -1,0 +1,633 @@
+/* ===================================================
+   VIDEO REFERENCE COLLAGE (EXACT 1:1 RECREATION)
+   =================================================== */
+
+.video-collage-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 700px;
+  background-color: #0b0d0c;
+  background-image: 
+    radial-gradient(ellipse 65% 55% at 50% 50%, rgba(26, 32, 27, 0.6) 0%, transparent 85%),
+    radial-gradient(circle at 50% 30%, rgba(70, 85, 72, 0.12) 0%, transparent 60%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  perspective: 1200px;
+}
+
+/* 3D Viewport wrapper */
+.video-perspective-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Central Stage Anchor Point for 3x3 Grid */
+.video-collage-stage {
+  position: relative;
+  width: 650px;
+  height: 740px;
+  max-width: 95vw;
+  max-height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+/* Individual Card Base - Uniform Size with Tight Packing */
+.video-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-sizing: border-box;
+  will-change: transform, z-index, opacity;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 1. THU / 0316 AVE Cards */
+.vcard-thu-large,
+.vcard-thu-medium {
+  position: relative;
+  background-color: #f0ece1;
+}
+
+.vcard-thu-large .thu-bg,
+.vcard-thu-medium .thu-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.08) brightness(1.02);
+}
+
+.vcard-thu-large .thu-content,
+.vcard-thu-medium .thu-content {
+  position: absolute;
+  inset: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.12) 0%,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(14, 18, 15, 0.55) 100%
+  );
+}
+
+.vcard-thu-large h2,
+.vcard-thu-medium h2 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.vcard-thu-medium h2 {
+  font-size: 2.3rem;
+}
+
+.vcard-thu-large .thu-sub,
+.vcard-thu-medium .thu-sub {
+  font-family: monospace;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #e5f2e8;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.vcard-thu-medium .thu-sub {
+  font-size: 1.2rem;
+}
+
+/* 2. 2026 / NOV Olive Mat Card */
+.vcard-nov-olive {
+  background-color: #495642;
+  border: 10px solid #495642;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.vcard-nov-olive .nov-inner {
+  position: relative;
+  flex: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.vcard-nov-olive .nov-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.1) brightness(0.9);
+}
+
+.vcard-nov-olive .nov-text-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 16px 0;
+  box-sizing: border-box;
+}
+
+.vcard-nov-olive h3 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.vcard-nov-olive .nov-month {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* 3. NATURAL FRESH Card */
+.vcard-natural-fresh {
+  background-color: #101411;
+  color: #ffffff;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vcard-natural-fresh h2 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.15rem;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #ffffff;
+}
+
+.vcard-natural-fresh h2 span {
+  display: block;
+}
+
+/* 4. 12K Contributor Worldwide Card */
+.vcard-stat-12k {
+  position: relative;
+  background-color: #1a221d;
+  color: #ffffff;
+}
+
+.vcard-stat-12k .bg-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.1) brightness(0.95);
+}
+
+.vcard-stat-12k .stat-content {
+  position: absolute;
+  inset: 0;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+}
+
+.vcard-stat-12k .big-num {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 3.6rem;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.vcard-stat-12k .stat-labels {
+  align-self: flex-end;
+  text-align: right;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  color: #edf2ee;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.vcard-stat-12k .stat-labels span {
+  display: block;
+}
+
+/* 5. Maple Street Card */
+.vcard-maple-street {
+  background-color: #ebe7de;
+  color: #161816;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.vcard-maple-street p {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: #1a1e1b;
+}
+
+.vcard-maple-street .maple-pill {
+  width: 32px;
+  height: 12px;
+  border-radius: 999px;
+  background: #3c493a;
+  align-self: center;
+  margin-top: 8px;
+}
+
+/* 6. Olive Arch Scallop Pattern Card */
+.vcard-arch-pattern {
+  background-color: #475440;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vcard-arch-pattern svg,
+.vcard-ultimate-taste svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 7. ULTIMATE TASTE Card */
+.vcard-ultimate-taste {
+  background-color: #f7f4ec;
+  color: #171a18;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.vcard-ultimate-taste .taste-header {
+  padding: 14px 16px 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #1e221f;
+}
+
+.vcard-ultimate-taste .taste-pattern-wrap {
+  flex: 1;
+  background: #475440;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 8. Cities Madrid / Barcelona / Sevilla */
+.vcard-cities-madrid {
+  background-color: #0d100e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e5ede7;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.vcard-cities-madrid .city-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vcard-cities-madrid .city-name {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  line-height: 1.15;
+}
+
+.vcard-cities-madrid .city-nums {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: #849688;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 6px;
+  margin-top: 6px;
+}
+
+/* 9. Number Column 0034 - 0095 */
+.vcard-num-column {
+  background-color: #ebe7de;
+  color: #1b1e1c;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.vcard-num-column span {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1f2421;
+}
+
+.vcard-num-column .dash {
+  font-size: 1.2rem;
+  color: #8a968d;
+}
+
+/* 10. North Ave Card */
+.vcard-north-ave {
+  background-color: #dce3da;
+  color: #191c1a;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.vcard-north-ave .north-img-wrap {
+  width: 100%;
+  height: 85px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vcard-north-ave img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vcard-north-ave .north-label {
+  align-self: flex-end;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1d221e;
+  letter-spacing: -0.01em;
+  margin-top: 6px;
+}
+
+/* 11. Checker Face Portrait Card */
+.vcard-checker-portrait {
+  background-color: #0c0f0d;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vcard-checker-portrait .portrait-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(80%) contrast(1.15);
+  display: block;
+}
+
+.vcard-checker-portrait .checker-mask {
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 1.5px solid #ffffff;
+}
+
+.checker-cell-w { background-color: #ffffff; }
+.checker-cell-b { background-color: #121513; }
+
+/* 12. Small Portrait */
+.vcard-small-portrait {
+  background-color: #111412;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+
+.vcard-small-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(1.5px) saturate(1.2);
+  display: block;
+}
+
+/* 13. Flower Stem */
+.vcard-flower-stem {
+  background-color: #f2efe8;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.vcard-flower-stem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.1);
+}
+
+/* Floating HUD Controls */
+.video-hud {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(18, 22, 19, 0.82);
+  border: 1px solid rgba(135, 155, 138, 0.25);
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+  white-space: nowrap;
+}
+
+.video-hud-btn {
+  background: none;
+  border: none;
+  color: #a4b5a8;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.video-hud-btn:hover {
+  color: #edf5ef;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.video-hud-btn.active {
+  background: rgba(158, 187, 164, 0.22);
+  color: #c7decb;
+}
+
+.video-hud-separator {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.video-hud-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.video-hud-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.video-hud-dot.active {
+  width: 22px;
+  border-radius: 999px;
+  background: #7ee094;
+}
+
+.video-hud-name {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  color: #8c9e90;
+  padding-left: 4px;
+}
+
+/* Header overlay */
+.video-header-overlay {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.video-header-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #798e7d;
+  margin-bottom: 4px;
+}
+
+.video-header-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #e6ede8;
+  margin: 0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .video-collage-stage {
+    --collage-scale: 0.88;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-collage-stage {
+    --collage-scale: 0.68;
+  }
+  .video-header-title {
+    font-size: 1.25rem;
+  }
+  .video-hud-name {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-collage-stage {
+    --collage-scale: 0.52;
+  }
+}

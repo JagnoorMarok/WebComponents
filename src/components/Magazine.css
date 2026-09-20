@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500&display=swap');
+
+.magazine-section {
+  width: 100%;
+  height: 100vh;
+  background-color: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 2000px;
+}
+
+.magazine-parallax-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 900px; /* Reduced max width for smaller book */
+  height: 80vh; /* Fit within viewport safely */
+  margin: 0 auto;
+  transform-style: preserve-3d;
+}
+
+.demo-book {
+  box-shadow: 0 0 50px rgba(0,0,0,0.8);
+}
+
+.demoPage {
+  background-color: #111;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5); /* subtle inner shadow for paper */
+}
+
+/* Page Rendering Styles */
+.page-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Vignette overlay for dramatic lighting */
+.page-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.page-cover {
+  padding: 3rem;
+  justify-content: flex-end;
+}
+
+.page-cover h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  z-index: 2;
+  position: relative;
+}
+
+.page-cover .meta {
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  line-height: 2;
+  opacity: 0.8;
+  z-index: 2;
+  position: relative;
+  white-space: pre-line;
+}
+
+.page-quote {
+  padding: 4rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.page-quote h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  line-height: 1.4;
+  font-style: italic;
+  z-index: 2;
+  position: relative;
+}
+
+.page-text-heavy {
+  padding: 4rem;
+  justify-content: center;
+}
+
+.page-text-heavy h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3vw, 2.5rem);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  z-index: 2;
+  position: relative;
+}
+
+.page-text-heavy p {
+  font-size: 1rem;
+  opacity: 0.8;
+  line-height: 1.8;
+  z-index: 2;
+  position: relative;
+  max-width: 90%;
+}
+
+.page-final {
+  padding: 4rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.page-final h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 5vw, 4rem);
+  margin-bottom: 1rem;
+  z-index: 2;
+  position: relative;
+  letter-spacing: 2px;
+}
+
+.page-final p {
+  font-size: 1rem;
+  opacity: 0.6;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  z-index: 2;
+  position: relative;
+}
+
+.barcode {
+  position: absolute;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  width: 50px;
+  height: 30px;
+  background: repeating-linear-gradient(90deg, #fff 0, #fff 2px, transparent 2px, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 8px);
+  z-index: 2;
+  opacity: 0.5;
+}

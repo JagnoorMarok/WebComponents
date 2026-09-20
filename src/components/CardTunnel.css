@@ -1,0 +1,307 @@
+/* ===================================================
+   CARD TUNNEL: INFINITE SQUARE 3D CORRIDOR
+   =================================================== */
+
+.card-tunnel-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  background-color: #090b0e;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+}
+
+.card-tunnel-container:active {
+  cursor: grabbing;
+}
+
+.card-tunnel-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Header Overlay */
+.card-tunnel-header {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.card-tunnel-badge {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #8da4be;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(14px);
+}
+
+.card-tunnel-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f1f4f8;
+  margin: 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+}
+
+.card-tunnel-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #8090a2;
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+}
+
+/* Vanishing Point Subtle Center Aperture */
+.card-tunnel-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.28;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.crosshair-square {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(130, 180, 240, 0.5);
+  box-shadow: 0 0 12px rgba(100, 160, 255, 0.2);
+}
+
+.crosshair-h {
+  position: absolute;
+  width: 90px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(130, 180, 240, 0.6), transparent);
+}
+
+.crosshair-v {
+  position: absolute;
+  height: 90px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(130, 180, 240, 0.6), transparent);
+}
+
+/* ===================================================
+   FLOATING AMBIENT HUD CONTROLS
+   =================================================== */
+
+.card-tunnel-hud {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 18px;
+  background: rgba(14, 18, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 14px 40px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 90;
+}
+
+.card-tunnel-hud-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cfd9e5;
+  padding: 7px 15px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-tunnel-hud-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.card-tunnel-hud-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.card-tunnel-hud-btn.turbo-btn {
+  background: rgba(255, 200, 60, 0.1);
+  border-color: rgba(255, 200, 60, 0.2);
+  color: #ffe285;
+}
+
+.card-tunnel-hud-btn.turbo-btn:hover,
+.card-tunnel-hud-btn.turbo-btn.active {
+  background: linear-gradient(135deg, rgba(255, 180, 40, 0.3) 0%, rgba(255, 100, 40, 0.3) 100%);
+  border-color: rgba(255, 200, 60, 0.45);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(255, 180, 50, 0.35);
+}
+
+.card-tunnel-hud-divider {
+  width: 1px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Wall Density Group (Lanes per Wall) */
+.card-tunnel-density-group,
+.card-tunnel-coverage-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-tunnel-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #8c9ba8;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.card-tunnel-pill:hover {
+  color: #e0e6ed;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.card-tunnel-pill.selected {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.card-tunnel-pill.full-wall {
+  background: linear-gradient(135deg, rgba(70, 150, 255, 0.28) 0%, rgba(130, 80, 250, 0.28) 100%);
+  border-color: rgba(100, 180, 255, 0.45);
+  color: #64d2ff;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(100, 200, 255, 0.25);
+}
+
+/* Speed Slider Group */
+.card-tunnel-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-tunnel-hud-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7d8c9d;
+}
+
+.card-tunnel-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 85px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.card-tunnel-slider:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.card-tunnel-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #64d2ff;
+  box-shadow: 0 0 10px rgba(100, 210, 255, 0.6);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.card-tunnel-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #90e0ff;
+}
+
+.card-tunnel-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #64d2ff;
+  border: none;
+  box-shadow: 0 0 10px rgba(100, 210, 255, 0.6);
+  cursor: pointer;
+}
+
+.card-tunnel-slider-badge {
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64d2ff;
+  background: rgba(100, 210, 255, 0.1);
+  border: 1px solid rgba(100, 210, 255, 0.25);
+  padding: 2px 7px;
+  border-radius: 6px;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .card-tunnel-header {
+    top: 20px;
+  }
+  .card-tunnel-title {
+    font-size: 1.6rem;
+  }
+  .card-tunnel-subtitle {
+    display: none;
+  }
+  .card-tunnel-hud {
+    bottom: 16px;
+    padding: 6px 12px;
+    gap: 8px;
+    max-width: 90vw;
+    overflow-x: auto;
+  }
+}

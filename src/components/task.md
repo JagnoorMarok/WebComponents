@@ -1,0 +1,8 @@
+- [x] Curate 6-8 high-quality cinematic/futuristic images.
+- [x] Implement procedural Canvas noise generator for the edge masks.
+- [x] Implement `InfiniteImageGallery` component.
+- [x] Create the seamless horizontal marquee animation using `framer-motion`.
+- [x] Apply the generated canvas noise as a CSS `mask-image`.
+- [x] Style the layout (ivory background, rounded cards, no scrollbars).
+- [x] Test the animation and edge dissolution effect.
+- [x] Write walkthrough artifact.

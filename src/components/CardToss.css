@@ -1,0 +1,489 @@
+/* ===================================================
+   CARD TOSS: BALLISTIC PROJECTILE MOTION COMPONENT
+   =================================================== */
+
+.card-toss-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 650px;
+  background-color: #0b0d10;
+  background-image: 
+    radial-gradient(circle at 50% 100%, rgba(26, 32, 44, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 25%, rgba(18, 22, 28, 0.9) 0%, transparent 85%);
+  overflow: hidden;
+  user-select: none;
+  cursor: crosshair;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  perspective: 1200px;
+}
+
+/* Ambient Visual Effects */
+.card-toss-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.65) 100%);
+  z-index: 2;
+}
+
+.card-toss-ambient-glow {
+  position: absolute;
+  bottom: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 350px;
+  background: radial-gradient(ellipse at center, rgba(120, 140, 165, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header Overlay */
+.card-toss-header {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.card-toss-badge {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #7b8fa4;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(12px);
+}
+
+.card-toss-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f3f5f8;
+  margin: 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+
+.card-toss-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #8c9ba8;
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+}
+
+/* 3D Ballistic Physics Stage */
+.card-toss-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+/* Individual Physical Card Container */
+.toss-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  will-change: transform, z-index, box-shadow;
+  pointer-events: auto;
+  cursor: grab;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: filter 0.2s ease;
+}
+
+.toss-card:hover {
+  cursor: pointer;
+  filter: brightness(1.08);
+}
+
+.toss-card:active {
+  cursor: grabbing;
+}
+
+/* Card Inner & Border Types */
+.toss-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: #1a1d24;
+  box-sizing: border-box;
+}
+
+/* 1. Polaroid Theme: off-white thick photo frame */
+.toss-card-polaroid .toss-card-inner {
+  background-color: #f7f6f2;
+  padding: 9px 9px 16px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.toss-card-polaroid .toss-card-img-wrap {
+  border-radius: 8px;
+  flex: 1;
+}
+
+.toss-card-polaroid .toss-card-footer {
+  padding: 8px 4px 0 4px;
+}
+
+.toss-card-polaroid .toss-card-category {
+  color: #6a717a;
+}
+
+.toss-card-polaroid .toss-card-caption {
+  color: #262a30;
+  font-weight: 600;
+}
+
+/* 2. Minimal White Theme */
+.toss-card-minimal-white .toss-card-inner {
+  background-color: #ffffff;
+  padding: 8px 8px 14px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.toss-card-minimal-white .toss-card-img-wrap {
+  border-radius: 8px;
+  flex: 1;
+}
+
+.toss-card-minimal-white .toss-card-footer {
+  padding: 7px 4px 0 4px;
+}
+
+.toss-card-minimal-white .toss-card-category {
+  color: #838d98;
+}
+
+.toss-card-minimal-white .toss-card-caption {
+  color: #181b20;
+  font-weight: 600;
+}
+
+/* 3. Borderless Theme: sleek edge-to-edge photography */
+.toss-card-borderless .toss-card-inner {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #12151a;
+}
+
+.toss-card-borderless .toss-card-img-wrap {
+  border-radius: 14px;
+  width: 100%;
+  height: 100%;
+}
+
+/* 4. Editorial Theme: dark contemporary matte */
+.toss-card-editorial .toss-card-inner {
+  background-color: #15181e;
+  padding: 8px 8px 12px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.toss-card-editorial .toss-card-img-wrap {
+  border-radius: 8px;
+  flex: 1;
+}
+
+.toss-card-editorial .toss-card-footer {
+  padding: 7px 4px 0 4px;
+}
+
+.toss-card-editorial .toss-card-category {
+  color: #8c98a5;
+}
+
+.toss-card-editorial .toss-card-caption {
+  color: #e6ebf2;
+  font-weight: 600;
+}
+
+/* Image & Gloss Sheen */
+.toss-card-img-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #0d0f12;
+}
+
+.toss-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.toss-card-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.05) 35%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  pointer-events: none;
+}
+
+/* Card Typography */
+.toss-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.toss-card-category {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.toss-card-caption {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 65%;
+  text-align: right;
+}
+
+/* ===================================================
+   FLOATING AMBIENT HUD CONTROLS
+   =================================================== */
+
+.card-toss-hud {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 18px;
+  background: rgba(18, 22, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 
+    0 12px 36px rgba(0, 0, 0, 0.55),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+  z-index: 90;
+}
+
+.card-toss-hud-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cfd8e3;
+  padding: 7px 15px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-toss-hud-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.card-toss-hud-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.card-toss-hud-btn.burst-btn {
+  background: linear-gradient(135deg, rgba(85, 125, 210, 0.3) 0%, rgba(130, 90, 210, 0.3) 100%);
+  border-color: rgba(140, 160, 255, 0.35);
+  color: #ffffff;
+}
+
+.card-toss-hud-btn.burst-btn:hover {
+  background: linear-gradient(135deg, rgba(85, 125, 210, 0.45) 0%, rgba(130, 90, 210, 0.45) 100%);
+  box-shadow: 0 4px 16px rgba(110, 130, 255, 0.3);
+}
+
+.card-toss-hud-divider {
+  width: 1px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-toss-gravity-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-toss-hud-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7b8896;
+  margin-right: 4px;
+}
+
+.card-toss-pill {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #8c9ba8;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.card-toss-pill:hover {
+  color: #e0e6ed;
+}
+
+.card-toss-pill.selected {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+/* In-Flight Cards Density Slider */
+.card-toss-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-toss-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 95px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.card-toss-slider:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.card-toss-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #64d2ff;
+  box-shadow: 0 0 10px rgba(100, 210, 255, 0.6);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.card-toss-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #90e0ff;
+}
+
+.card-toss-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #64d2ff;
+  border: none;
+  box-shadow: 0 0 10px rgba(100, 210, 255, 0.6);
+  cursor: pointer;
+}
+
+.card-toss-slider-badge {
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64d2ff;
+  background: rgba(100, 210, 255, 0.1);
+  border: 1px solid rgba(100, 210, 255, 0.25);
+  padding: 2px 7px;
+  border-radius: 6px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.card-toss-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.telemetry-pill {
+  font-family: monospace;
+  font-size: 0.74rem;
+  color: #78899a;
+}
+
+.telemetry-pill strong {
+  color: #64d2ff;
+  font-weight: 700;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .card-toss-header {
+    top: 20px;
+  }
+  .card-toss-title {
+    font-size: 1.6rem;
+  }
+  .card-toss-subtitle {
+    display: none;
+  }
+  .card-toss-hud {
+    bottom: 16px;
+    padding: 6px 12px;
+    gap: 8px;
+    max-width: 90vw;
+    overflow-x: auto;
+  }
+  .card-toss-telemetry {
+    display: none;
+  }
+}
