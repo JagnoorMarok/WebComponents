@@ -268,10 +268,10 @@
 /* Floating Glassmorphic Ambient HUD */
 .trail-hud {
   position: absolute;
-  bottom: 28px;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(13, 17, 24, 0.84);
+  background: rgba(13, 17, 24, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
@@ -282,7 +282,15 @@
   align-items: center;
   gap: 14px;
   z-index: 90;
-  max-width: 95vw;
+  max-width: calc(100vw - 24px);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trail-hud::-webkit-scrollbar {
+  display: none;
 }
 
 .trail-hud-btn {
@@ -425,9 +433,8 @@
   .trail-hud {
     gap: 8px;
     padding: 6px 12px;
-    bottom: 16px;
-    overflow-x: auto;
-    border-radius: 18px;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    border-radius: 999px;
   }
   .trail-slider {
     width: 60px;
@@ -435,20 +442,35 @@
 }
 
 @media (max-width: 600px) {
+  .trail-center-hint {
+    width: 90%;
+  }
+  .trail-hint-badge {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+  }
   .trail-hint-title {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
   }
   .trail-hint-subtitle {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  .trail-card-item {
+    zoom: 0.78;
   }
   .trail-hud {
-    bottom: 12px;
-    max-width: 92vw;
-    font-size: 0.7rem;
+    bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    max-width: calc(100vw - 16px);
     padding: 6px 10px;
+    gap: 6px;
   }
   .trail-hud-btn {
-    padding: 5px 10px;
+    padding: 5px 9px;
     font-size: 0.72rem;
+  }
+  .trail-style-pill {
+    padding: 3px 7px;
+    font-size: 0.68rem;
   }
 }

@@ -207,7 +207,12 @@ const CardTunnel = () => {
     scene.background = new THREE.Color(TUNNEL_CONFIG.fogColor);
     scene.fog = new THREE.Fog(TUNNEL_CONFIG.fogColor, TUNNEL_CONFIG.fogNear, TUNNEL_CONFIG.fogFar);
 
-    const initialFov = fovMode === 'wide' ? 85 : fovMode === 'cinematic' ? 55 : 70;
+    const getBaseFov = (w, h) => {
+      const modeFov = fovMode === 'wide' ? 85 : fovMode === 'cinematic' ? 55 : 70;
+      return w < h ? Math.min(95, modeFov + 12) : modeFov;
+    };
+
+    const initialFov = getBaseFov(width, height);
     const camera = new THREE.PerspectiveCamera(initialFov, width / height, 0.1, 250);
     camera.position.set(0, 0, 0);
 
@@ -305,13 +310,27 @@ const CardTunnel = () => {
       mouseRef.current.targetY = ny;
     };
 
+    const handleTouch = (e) => {
+      if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        const nx = ((touch.clientX - rect.left) / width) * 2 - 1;
+        const ny = -(((touch.clientY - rect.top) / height) * 2 - 1);
+        mouseRef.current.targetX = Math.max(-1.5, Math.min(1.5, nx));
+        mouseRef.current.targetY = Math.max(-1.5, Math.min(1.5, ny));
+      }
+    };
+
     container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('touchstart', handleTouch, { passive: true });
+    container.addEventListener('touchmove', handleTouch, { passive: true });
 
     // 8. Window Resize Handler
     const handleResize = () => {
       if (!container) return;
       width = container.clientWidth;
       height = container.clientHeight;
+      camera.fov = getBaseFov(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
@@ -385,6 +404,8 @@ const CardTunnel = () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
       container.removeEventListener('mousemove', handleMouseMove);
+      container.removeEventListener('touchstart', handleTouch);
+      container.removeEventListener('touchmove', handleTouch);
       if (renderer.domElement && renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }

@@ -15,86 +15,104 @@ import WebcamPixelGridDemo from './components/WebcamPixelGridDemo';
 
 function App() {
   const [activeTab, setActiveTab] = useState('webcam-pixel-grid');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth > 768 : true;
+  });
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   return (
     <div className="app-layout">
+      {/* Mobile Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="sidebar-backdrop" 
+          onClick={() => setIsSidebarOpen(false)}
+          aria-label="Close Sidebar"
+        />
+      )}
+
       {/* Sidebar */}
       <aside className={`sidebar ${!isSidebarOpen ? 'closed' : ''}`}>
         <div className="sidebar-header">
           <h1>Components</h1>
-          <button className="close-btn" onClick={() => setIsSidebarOpen(false)}>&times;</button>
+          <button className="close-btn" onClick={() => setIsSidebarOpen(false)} aria-label="Close Navigation">&times;</button>
         </div>
         <nav className="nav-links">
           <div 
             className={`nav-link ${activeTab === 'webcam-pixel-grid' ? 'active' : ''}`}
-            onClick={() => setActiveTab('webcam-pixel-grid')}
+            onClick={() => handleTabClick('webcam-pixel-grid')}
           >
             Webcam Pixel Grid
           </div>
           <div 
             className={`nav-link ${activeTab === 'image-trail' ? 'active' : ''}`}
-            onClick={() => setActiveTab('image-trail')}
+            onClick={() => handleTabClick('image-trail')}
           >
             Image Trail
           </div>
           <div 
             className={`nav-link ${activeTab === 'card-globe' ? 'active' : ''}`}
-            onClick={() => setActiveTab('card-globe')}
+            onClick={() => handleTabClick('card-globe')}
           >
             Card Globe
           </div>
           <div 
             className={`nav-link ${activeTab === 'card-tunnel' ? 'active' : ''}`}
-            onClick={() => setActiveTab('card-tunnel')}
+            onClick={() => handleTabClick('card-tunnel')}
           >
             Card Tunnel
           </div>
           <div 
             className={`nav-link ${activeTab === 'card-toss' ? 'active' : ''}`}
-            onClick={() => setActiveTab('card-toss')}
+            onClick={() => handleTabClick('card-toss')}
           >
             Card Toss
           </div>
           <div 
             className={`nav-link ${activeTab === 'video-collage' ? 'active' : ''}`}
-            onClick={() => setActiveTab('video-collage')}
+            onClick={() => handleTabClick('video-collage')}
           >
             Video Moodboard
           </div>
           <div 
             className={`nav-link ${activeTab === 'card-collage' ? 'active' : ''}`}
-            onClick={() => setActiveTab('card-collage')}
+            onClick={() => handleTabClick('card-collage')}
           >
             Card Collage
           </div>
           <div 
             className={`nav-link ${activeTab === 'threed-card-ring' ? 'active' : ''}`}
-            onClick={() => setActiveTab('threed-card-ring')}
+            onClick={() => handleTabClick('threed-card-ring')}
           >
             3D Card Ring
           </div>
           <div 
             className={`nav-link ${activeTab === 'grainy-carousel' ? 'active' : ''}`}
-            onClick={() => setActiveTab('grainy-carousel')}
+            onClick={() => handleTabClick('grainy-carousel')}
           >
             Grainy Carousel
           </div>
           <div 
             className={`nav-link ${activeTab === 'focus-slice' ? 'active' : ''}`}
-            onClick={() => setActiveTab('focus-slice')}
+            onClick={() => handleTabClick('focus-slice')}
           >
             Focus Slice
           </div>
           <div 
             className={`nav-link ${activeTab === 'magazine' ? 'active' : ''}`}
-            onClick={() => setActiveTab('magazine')}
+            onClick={() => handleTabClick('magazine')}
           >
             Magazine 3D
           </div>
           <div 
             className={`nav-link ${activeTab === 'buttons' ? 'active' : ''}`}
-            onClick={() => setActiveTab('buttons')}
+            onClick={() => handleTabClick('buttons')}
           >
             Buttons
           </div>
@@ -103,10 +121,10 @@ function App() {
 
       {/* Main Content Area */}
       <div className={`main-wrapper ${!isSidebarOpen ? 'expanded' : ''}`}>
-        <div className="top-bar" style={{ position: 'absolute', top: 0, left: 0, zIndex: 100, display: 'flex', gap: '1rem' }}>
+        <div className="top-bar">
           {!isSidebarOpen && (
-            <button className="toggle-btn" onClick={() => setIsSidebarOpen(true)}>
-              &#9776; Menu
+            <button className="toggle-btn" onClick={() => setIsSidebarOpen(true)} aria-label="Open Navigation">
+              &#9776; <span>Menu</span>
             </button>
           )}
         </div>

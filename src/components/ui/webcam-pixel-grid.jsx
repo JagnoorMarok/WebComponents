@@ -271,15 +271,25 @@ export const WebcamPixelGrid = ({
     scene.background = new THREE.Color(backgroundColor);
     sceneRef.current = scene;
 
-      // 2. Perspective Camera with balanced elevation tilt
+    // 2. Perspective Camera with balanced elevation tilt
     const fov = 40;
-    const camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 2000);
-    const distance = 580;
-    camera.position.set(0, -32, distance);
+    const camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 3000);
+    
+    // Adaptive camera distance: In portrait mode (width < height), push camera back
+    // so the entire 60-column matrix fits within the mobile viewport without clipping
+    const computeDistance = (w, h) => {
+      if (w < h) {
+        return Math.max(580, 580 * (h / w) * 0.58);
+      }
+      return 580;
+    };
+
+    let currentDistance = computeDistance(width, height);
+    camera.position.set(0, -32, currentDistance);
     camera.lookAt(0, 6, 0);
     cameraRef.current = camera;
 
-    // Mouse tracking for subtle 3D interactive tilt
+    // Mouse & Touch tracking for subtle 3D interactive tilt
     const mousePos = { x: 0, y: 0, targetX: 0, targetY: 0 };
     const onMouseMove = (e) => {
       const rect = container.getBoundingClientRect();
@@ -288,7 +298,21 @@ export const WebcamPixelGrid = ({
         mousePos.targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
       }
     };
+
+    const onTouch = (e) => {
+      if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          mousePos.targetX = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
+          mousePos.targetY = ((touch.clientY - rect.top) / rect.height - 0.5) * 2;
+        }
+      }
+    };
+
     window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('touchstart', onTouch, { passive: true });
+    window.addEventListener('touchmove', onTouch, { passive: true });
 
     // 3. WebGL Renderer
     const renderer = new THREE.WebGLRenderer({
@@ -433,7 +457,7 @@ export const WebcamPixelGrid = ({
 
       // Responsive viewport dimensions in Three.js world units
       const vFOV = (camera.fov * Math.PI) / 180;
-      const planeH = 2 * Math.tan(vFOV / 2) * distance;
+      const planeH = 2 * Math.tan(vFOV / 2) * currentDistance;
       const planeW = planeH * camera.aspect;
 
       const cellW = planeW / cols;
@@ -624,6 +648,8 @@ export const WebcamPixelGrid = ({
       width = container.clientWidth;
       height = container.clientHeight;
       camera.aspect = width / height;
+      currentDistance = computeDistance(width, height);
+      camera.position.z = currentDistance;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
     };
@@ -636,6 +662,8 @@ export const WebcamPixelGrid = ({
       }
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchstart', onTouch);
+      window.removeEventListener('touchmove', onTouch);
       if (renderer.domElement && renderer.domElement.parentNode) {
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }

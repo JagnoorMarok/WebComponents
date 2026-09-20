@@ -285,14 +285,14 @@
 
 .card-toss-hud {
   position: absolute;
-  bottom: 28px;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 18px;
-  background: rgba(18, 22, 28, 0.85);
+  background: rgba(18, 22, 28, 0.86);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
   backdrop-filter: blur(20px);
@@ -301,6 +301,15 @@
     0 12px 36px rgba(0, 0, 0, 0.55),
     0 2px 8px rgba(0, 0, 0, 0.35);
   z-index: 90;
+  max-width: calc(100vw - 24px);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-toss-hud::-webkit-scrollbar {
+  display: none;
 }
 
 .card-toss-hud-btn {
@@ -468,20 +477,31 @@
 /* Responsiveness */
 @media (max-width: 768px) {
   .card-toss-header {
-    top: 20px;
+    top: max(16px, env(safe-area-inset-top, 16px));
+    width: 90%;
   }
   .card-toss-title {
-    font-size: 1.6rem;
+    font-size: 1.45rem;
   }
   .card-toss-subtitle {
     display: none;
   }
   .card-toss-hud {
-    bottom: 16px;
-    padding: 6px 12px;
-    gap: 8px;
-    max-width: 90vw;
-    overflow-x: auto;
+    bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    padding: 6px 10px;
+    gap: 6px;
+    max-width: calc(100vw - 16px);
+  }
+  .card-toss-hud-btn {
+    padding: 6px 11px;
+    font-size: 0.74rem;
+  }
+  .card-toss-pill {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+  .card-toss-slider {
+    width: 60px;
   }
   .card-toss-telemetry {
     display: none;

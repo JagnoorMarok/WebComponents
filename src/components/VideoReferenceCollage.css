@@ -6,7 +6,8 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  min-height: 700px;
+  height: 100dvh;
+  min-height: 500px;
   background-color: #0b0d0c;
   background-image: 
     radial-gradient(ellipse 65% 55% at 50% 50%, rgba(26, 32, 27, 0.6) 0%, transparent 85%),
@@ -503,7 +504,7 @@
 /* Floating HUD Controls */
 .video-hud {
   position: absolute;
-  bottom: 24px;
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -511,12 +512,20 @@
   gap: 10px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: rgba(18, 22, 19, 0.82);
+  background: rgba(18, 22, 19, 0.85);
   border: 1px solid rgba(135, 155, 138, 0.25);
   backdrop-filter: blur(16px);
   z-index: 100;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
   white-space: nowrap;
+  max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.video-hud::-webkit-scrollbar {
+  display: none;
 }
 
 .video-hud-btn {

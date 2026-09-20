@@ -6,10 +6,12 @@
   position: relative;
   width: 100%;
   height: 100vh;
-  min-height: 600px;
+  height: 100dvh;
+  min-height: 500px;
   background-color: #090b0e;
   overflow: hidden;
   user-select: none;
+  touch-action: none;
   cursor: grab;
 }
 
@@ -110,7 +112,7 @@
 
 .card-tunnel-hud {
   position: absolute;
-  bottom: 28px;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -126,6 +128,15 @@
     0 14px 40px rgba(0, 0, 0, 0.6),
     0 2px 8px rgba(0, 0, 0, 0.35);
   z-index: 90;
+  max-width: calc(100vw - 28px);
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-tunnel-hud::-webkit-scrollbar {
+  display: none;
 }
 
 .card-tunnel-hud-btn {
@@ -289,19 +300,30 @@
 /* Responsiveness */
 @media (max-width: 768px) {
   .card-tunnel-header {
-    top: 20px;
+    top: max(16px, env(safe-area-inset-top, 16px));
+    width: 90%;
   }
   .card-tunnel-title {
-    font-size: 1.6rem;
+    font-size: 1.45rem;
   }
   .card-tunnel-subtitle {
     display: none;
   }
   .card-tunnel-hud {
-    bottom: 16px;
-    padding: 6px 12px;
-    gap: 8px;
-    max-width: 90vw;
-    overflow-x: auto;
+    bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    padding: 6px 10px;
+    gap: 6px;
+    max-width: calc(100vw - 20px);
+  }
+  .card-tunnel-hud-btn {
+    padding: 6px 11px;
+    font-size: 0.74rem;
+  }
+  .card-tunnel-pill {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+  .card-tunnel-slider {
+    width: 60px;
   }
 }
