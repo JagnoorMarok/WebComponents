@@ -1,10 +1,9 @@
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
- * Merges class names together conditionally.
+ * Merges class names together conditionally using clsx and tailwind-merge.
  */
 export function cn(...inputs) {
-  return inputs
-    .flat(Infinity)
-    .filter(Boolean)
-    .join(' ')
-    .trim();
+  return twMerge(clsx(inputs));
 }

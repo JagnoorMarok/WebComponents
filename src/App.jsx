@@ -14,9 +14,32 @@ import CardTunnel from './components/CardTunnel';
 import CardGlobe from './components/CardGlobe';
 import ImageTrail from './components/ImageTrail';
 import WebcamPixelGridDemo from './components/WebcamPixelGridDemo';
+import FloatingDockDemo from './components/floating-dock-demo.jsx';
+import WisprFlowDemo from './components/WisprFlowDemo.jsx';
+import InterfaceCraftsDemo from './components/InterfaceCraftsDemo.jsx';
+import ConstellationFieldDemo from './components/ConstellationFieldDemo.jsx';
+import StackTowerDemo from './components/StackTowerDemo.jsx';
+import MorphGalleryDemo from './components/MorphGalleryDemo.jsx';
+import WaterRippleImageDemo from './components/WaterRippleImageDemo.jsx';
+import ImageStackDemo from './components/ImageStackDemo.jsx';
+import InkRevealDemo from './components/InkRevealDemo.jsx';
+import CursorParticlesTypographyDemo from './components/CursorParticlesTypographyDemo.jsx';
+import KineticTextDemo from './components/KineticTextDemo.jsx';
+import ComponentCodeExplainer from './components/ComponentCodeExplainer.jsx';
 
 const COMPONENT_TITLES = {
   'home': 'Overview',
+  'kinetic-text': 'Kinetic Text',
+  'cursor-particles-typography': 'Cursor Particles Typography',
+  'ink-reveal': 'Ink Reveal',
+  'image-stack': 'Image Stack',
+  'water-ripple-image': 'Water Ripple Image',
+  'morph-gallery': 'Morph Gallery',
+  'stack-tower': 'Stack Tower',
+  'constellation-field': 'Constellation Field',
+  'interface-crafts': 'Interface Crafts Cards',
+  'wispr-flow': 'Wispr Flow Animation',
+  'floating-dock': 'Floating Dock',
   'image-spring': 'Image Spring 3D',
   'webcam-pixel-grid': 'Webcam Pixel Grid',
   'image-trail': 'Image Trail',
@@ -73,6 +96,72 @@ function App() {
             <span className="nav-icon">✦</span> Overview / Home
           </div>
           <div className="nav-divider" />
+          <div 
+            className={`nav-link ${activeTab === 'kinetic-text' ? 'active' : ''}`}
+            onClick={() => handleTabClick('kinetic-text')}
+          >
+            Kinetic Text
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'cursor-particles-typography' ? 'active' : ''}`}
+            onClick={() => handleTabClick('cursor-particles-typography')}
+          >
+            Cursor Particles Typography
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'ink-reveal' ? 'active' : ''}`}
+            onClick={() => handleTabClick('ink-reveal')}
+          >
+            Ink Reveal
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'image-stack' ? 'active' : ''}`}
+            onClick={() => handleTabClick('image-stack')}
+          >
+            Image Stack
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'water-ripple-image' ? 'active' : ''}`}
+            onClick={() => handleTabClick('water-ripple-image')}
+          >
+            Water Ripple Image
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'morph-gallery' ? 'active' : ''}`}
+            onClick={() => handleTabClick('morph-gallery')}
+          >
+            Morph Gallery
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'stack-tower' ? 'active' : ''}`}
+            onClick={() => handleTabClick('stack-tower')}
+          >
+            Stack Tower
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'constellation-field' ? 'active' : ''}`}
+            onClick={() => handleTabClick('constellation-field')}
+          >
+            Constellation Field
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'interface-crafts' ? 'active' : ''}`}
+            onClick={() => handleTabClick('interface-crafts')}
+          >
+            Interface Crafts
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'wispr-flow' ? 'active' : ''}`}
+            onClick={() => handleTabClick('wispr-flow')}
+          >
+            Wispr Flow
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'floating-dock' ? 'active' : ''}`}
+            onClick={() => handleTabClick('floating-dock')}
+          >
+            Floating Dock
+          </div>
           <div 
             className={`nav-link ${activeTab === 'image-spring' ? 'active' : ''}`}
             onClick={() => handleTabClick('image-spring')}
@@ -178,6 +267,17 @@ function App() {
               </button>
               <span className="breadcrumb-separator">/</span>
               <span className="breadcrumb-current">{COMPONENT_TITLES[activeTab] || 'Experiment'}</span>
+
+              <button
+                className="cce-jump-pill"
+                onClick={() => {
+                  const el = document.getElementById('component-code-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }}
+                title="Scroll down to inspect source code and architecture"
+              >
+                <span>Code & Architecture ↓</span>
+              </button>
             </div>
           ) : (
             <div className="top-bar-home-brand">
@@ -188,6 +288,72 @@ function App() {
 
         {activeTab === 'home' && (
           <LandingPage onSelectComponent={(tab) => handleTabClick(tab)} />
+        )}
+
+        {activeTab === 'kinetic-text' && (
+          <div className="kinetic-text-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <KineticTextDemo />
+          </div>
+        )}
+
+        {activeTab === 'cursor-particles-typography' && (
+          <div className="cursor-particles-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <CursorParticlesTypographyDemo />
+          </div>
+        )}
+
+        {activeTab === 'ink-reveal' && (
+          <div className="ink-reveal-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <InkRevealDemo />
+          </div>
+        )}
+
+        {activeTab === 'image-stack' && (
+          <div className="image-stack-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <ImageStackDemo />
+          </div>
+        )}
+
+        {activeTab === 'water-ripple-image' && (
+          <div className="water-ripple-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <WaterRippleImageDemo />
+          </div>
+        )}
+
+        {activeTab === 'morph-gallery' && (
+          <div className="morph-gallery-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <MorphGalleryDemo />
+          </div>
+        )}
+
+        {activeTab === 'stack-tower' && (
+          <div className="stack-tower-main" style={{ width: '100%', minHeight: '100vh', display: 'flex' }}>
+             <StackTowerDemo />
+          </div>
+        )}
+
+        {activeTab === 'constellation-field' && (
+          <div className="constellation-field-main" style={{ width: '100%', minHeight: '100vh', display: 'flex' }}>
+             <ConstellationFieldDemo />
+          </div>
+        )}
+
+        {activeTab === 'interface-crafts' && (
+          <div className="interface-crafts-main" style={{ width: '100%', height: '100vh', display: 'flex' }}>
+             <InterfaceCraftsDemo />
+          </div>
+        )}
+
+        {activeTab === 'wispr-flow' && (
+          <div className="wispr-flow-main" style={{ width: '100%', height: '100vh', display: 'flex' }}>
+             <WisprFlowDemo />
+          </div>
+        )}
+
+        {activeTab === 'floating-dock' && (
+          <div className="floating-dock-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0a0a0a', position: 'relative' }}>
+             <FloatingDockDemo />
+          </div>
         )}
 
         {activeTab === 'image-spring' && (
@@ -272,6 +438,11 @@ function App() {
               <ButtonShowcase />
             </section>
           </main>
+        )}
+
+        {/* Code & Architecture Breakdown Section for Every Component */}
+        {activeTab !== 'home' && (
+          <ComponentCodeExplainer componentId={activeTab} />
         )}
       </div>
     </div>

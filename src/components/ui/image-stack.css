@@ -1,0 +1,173 @@
+/* Image Stack - Interactive Draggable Fanned-Out Card Stack */
+.image-stack-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 40px 16px;
+  user-select: none;
+  font-family: inherit;
+}
+
+.image-stack-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 340px;
+  height: 480px;
+  max-width: 90vw;
+  max-height: 70vh;
+}
+
+.image-stack-card {
+  position: absolute;
+  width: 270px;
+  aspect-ratio: 5 / 7;
+  transform-origin: bottom center;
+  border-radius: 20px;
+  overflow: hidden;
+  background-color: #121216;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  cursor: grab;
+  will-change: transform;
+}
+
+.image-stack-card:active {
+  cursor: grabbing;
+}
+
+.image-stack-card.not-interactive {
+  cursor: default;
+}
+
+.image-stack-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  border-radius: 19px;
+}
+
+/* Atmospheric Gloss & Vignette on each card */
+.image-stack-gloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 19px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+}
+
+.image-stack-card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+/* Bottom Hint & Controls */
+.image-stack-footer {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.image-stack-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.image-stack-hint-icon {
+  animation: stack-swipe 2s ease-in-out infinite;
+}
+
+@keyframes stack-swipe {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
+/* Dots Indicator */
+.image-stack-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.image-stack-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.image-stack-dot.active {
+  width: 22px;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+/* Navigation Buttons */
+.image-stack-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.image-stack-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.image-stack-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.image-stack-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 640px) {
+  .image-stack-stage {
+    width: 280px;
+    height: 400px;
+  }
+  .image-stack-card {
+    width: 230px;
+  }
+}
