@@ -1,0 +1,256 @@
+/* ===================================================
+   IMAGE SPRING: 3D PARAMETRIC HELICAL FLOW
+   =================================================== */
+
+.image-spring-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  background-color: #07080c;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+}
+
+.image-spring-container:active {
+  cursor: grabbing;
+}
+
+.image-spring-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* Ambient Lighting Vignette */
+.image-spring-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    transparent 40%,
+    rgba(7, 8, 12, 0.65) 75%,
+    rgba(4, 5, 8, 0.95) 100%
+  );
+  z-index: 5;
+}
+
+.image-spring-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 450px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse,
+    rgba(56, 189, 248, 0.05) 0%,
+    rgba(168, 85, 247, 0.02) 50%,
+    transparent 75%
+  );
+  z-index: 4;
+}
+
+/* Header Overlay */
+.image-spring-header {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 80;
+  pointer-events: none;
+  width: 90%;
+  max-width: 720px;
+}
+
+.image-spring-badge {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.image-spring-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #f8fafc;
+  margin: 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
+}
+
+.image-spring-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 400;
+  color: #94a3b8;
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+/* Floating Ambient HUD */
+.image-spring-hud {
+  position: absolute;
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 16, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 24px rgba(56, 189, 248, 0.12);
+  z-index: 80;
+  max-width: 95vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.image-spring-hud::-webkit-scrollbar {
+  display: none;
+}
+
+.image-spring-hud-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.image-spring-hud-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.image-spring-hud-btn.active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.image-spring-hud-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.image-spring-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.image-spring-hud-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.image-spring-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.image-spring-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  transition: transform 0.15s ease;
+}
+
+.image-spring-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+.image-spring-slider-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 34px;
+  text-align: center;
+}
+
+/* ===================================================
+   RESPONSIVE DESIGN (< 768px)
+   =================================================== */
+
+@media (max-width: 768px) {
+  .image-spring-header {
+    top: 60px;
+    width: 92%;
+  }
+
+  .image-spring-title {
+    font-size: 1.7rem;
+  }
+
+  .image-spring-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .image-spring-hud {
+    bottom: 16px;
+    padding: 7px 12px;
+    gap: 8px;
+    justify-content: flex-start;
+    border-radius: 18px;
+  }
+
+  .image-spring-slider {
+    width: 55px;
+  }
+}

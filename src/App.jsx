@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
+import LandingPage from './components/LandingPage';
+import ImageSpring from './components/ImageSpring';
 import ButtonShowcase from './components/ButtonShowcase';
 import Magazine from './components/Magazine';
 import FocusSliceCarousel from './components/FocusSliceCarousel';
@@ -13,8 +15,25 @@ import CardGlobe from './components/CardGlobe';
 import ImageTrail from './components/ImageTrail';
 import WebcamPixelGridDemo from './components/WebcamPixelGridDemo';
 
+const COMPONENT_TITLES = {
+  'home': 'Overview',
+  'image-spring': 'Image Spring 3D',
+  'webcam-pixel-grid': 'Webcam Pixel Grid',
+  'image-trail': 'Image Trail',
+  'card-globe': 'Card Globe 3D',
+  'card-tunnel': 'Card Tunnel',
+  'card-toss': 'Card Toss',
+  'video-collage': 'Video Moodboard',
+  'card-collage': 'Animated Card Collage',
+  'threed-card-ring': '3D Card Ring',
+  'grainy-carousel': 'Grainy Carousel',
+  'focus-slice': 'Focus Slice',
+  'magazine': 'Magazine 3D Flip',
+  'buttons': 'Modern Buttons',
+};
+
 function App() {
-  const [activeTab, setActiveTab] = useState('webcam-pixel-grid');
+  const [activeTab, setActiveTab] = useState('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     return typeof window !== 'undefined' ? window.innerWidth > 768 : true;
   });
@@ -40,10 +59,26 @@ function App() {
       {/* Sidebar */}
       <aside className={`sidebar ${!isSidebarOpen ? 'closed' : ''}`}>
         <div className="sidebar-header">
-          <h1>Components</h1>
+          <div className="brand-logo" onClick={() => handleTabClick('home')} style={{ cursor: 'pointer' }}>
+            <h1>Components</h1>
+            <span className="brand-badge">LAB</span>
+          </div>
           <button className="close-btn" onClick={() => setIsSidebarOpen(false)} aria-label="Close Navigation">&times;</button>
         </div>
         <nav className="nav-links">
+          <div 
+            className={`nav-link nav-link-overview ${activeTab === 'home' ? 'active' : ''}`}
+            onClick={() => handleTabClick('home')}
+          >
+            <span className="nav-icon">✦</span> Overview / Home
+          </div>
+          <div className="nav-divider" />
+          <div 
+            className={`nav-link ${activeTab === 'image-spring' ? 'active' : ''}`}
+            onClick={() => handleTabClick('image-spring')}
+          >
+            Image Spring 3D
+          </div>
           <div 
             className={`nav-link ${activeTab === 'webcam-pixel-grid' ? 'active' : ''}`}
             onClick={() => handleTabClick('webcam-pixel-grid')}
@@ -127,8 +162,40 @@ function App() {
               &#9776; <span>Menu</span>
             </button>
           )}
+
+          {activeTab !== 'home' ? (
+            <div className="top-bar-nav">
+              <button 
+                className="back-showcase-btn" 
+                onClick={() => handleTabClick('home')}
+                title="Return to Component Showcase"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Back to Showcase</span>
+              </button>
+              <span className="breadcrumb-separator">/</span>
+              <span className="breadcrumb-current">{COMPONENT_TITLES[activeTab] || 'Experiment'}</span>
+            </div>
+          ) : (
+            <div className="top-bar-home-brand">
+              <span className="home-status-tag">✦ LIVE ARCHIVE</span>
+            </div>
+          )}
         </div>
-        
+
+        {activeTab === 'home' && (
+          <LandingPage onSelectComponent={(tab) => handleTabClick(tab)} />
+        )}
+
+        {activeTab === 'image-spring' && (
+          <div className="image-spring-main" style={{ width: '100%', height: '100vh', display: 'flex' }}>
+             <ImageSpring />
+          </div>
+        )}
+
         {activeTab === 'webcam-pixel-grid' && (
           <div className="webcam-pixel-grid-main" style={{ width: '100%', height: '100vh', display: 'flex' }}>
              <WebcamPixelGridDemo />

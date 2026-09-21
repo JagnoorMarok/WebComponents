@@ -106,63 +106,35 @@ function getFibonacciPoint(i, count, radius) {
 }
 
 /**
- * Updates vertex positions and normals so that the planar card
- * physically bends to match the exact spherical curvature of a globe of radius `radius`.
- * In world space, every vertex on the curved card satisfies:
- *   X^2 + Y^2 + Z^2 = radius^2
+ * Calculates the exact orthonormal basis for a planar card placed at `pt`.
+ * The card's face normal (local +Z axis) is strictly parallel to the radius vector
+ * drawn from the center of the sphere (0, 0, 0) to the center of the image (pt.x, pt.y, pt.z).
+ * Consequently, the entire image plane is strictly perpendicular to this radius vector.
  */
-function updateCurvedGeometryVertices(geom, w, h, radius, curvatureFactor = 1.0, segX = 24, segY = 24) {
-  const posAttr = geom.attributes.position;
-  const normAttr = geom.attributes.normal;
-  const count = posAttr.count;
+function getCardOrientation(pt) {
+  // Radius vector from sphere center (0,0,0) to center of the card
+  const normal = new THREE.Vector3(pt.x, pt.y, pt.z).normalize();
 
-  for (let i = 0; i < count; i++) {
-    const col = i % (segX + 1);
-    const row = Math.floor(i / (segX + 1));
-    const u = (col / segX - 0.5) * w;
-    const v = (0.5 - row / segY) * h;
+  // Upright orientation pointing towards North pole (0, 1, 0) along meridian
+  const worldUp = new THREE.Vector3(0, 1, 0);
+  let up = worldUp.clone().sub(normal.clone().multiplyScalar(normal.dot(worldUp)));
 
-    if (curvatureFactor <= 0.001) {
-      posAttr.setXYZ(i, u, v, 0);
-      normAttr.setXYZ(i, 0, 0, 1);
-    } else {
-      const effRadius = radius / curvatureFactor;
-      const thetaX = u / effRadius;
-      const thetaY = v / effRadius;
-
-      const cosY = Math.cos(thetaY);
-      const sinY = Math.sin(thetaY);
-      const cosX = Math.cos(thetaX);
-      const sinX = Math.sin(thetaX);
-
-      // Normal vector pointing radially outward from sphere center at (0, 0, -effRadius)
-      const nx = sinX * cosY;
-      const ny = sinY;
-      const nz = cosX * cosY;
-
-      // Position in card local space (origin at sphere surface)
-      // Bends backward along -Z toward the center of the globe
-      const px = effRadius * nx;
-      const py = effRadius * ny;
-      const pz = effRadius * (nz - 1);
-
-      posAttr.setXYZ(i, px, py, pz);
-      normAttr.setXYZ(i, nx, ny, nz);
-    }
+  if (up.lengthSq() < 0.0001) {
+    // Polar singularity fallback (when card is exactly at North or South pole)
+    const fallback = new THREE.Vector3(0, 0, 1);
+    up = fallback.clone().sub(normal.clone().multiplyScalar(normal.dot(fallback)));
   }
+  up.normalize();
 
-  posAttr.needsUpdate = true;
-  normAttr.needsUpdate = true;
-  geom.computeBoundingSphere();
-}
+  // Right vector tangent to latitude lines (perpendicular to both up and normal)
+  const right = new THREE.Vector3().crossVectors(up, normal).normalize();
+  
+  // Re-orthogonalize up to guarantee strict orthonormality
+  up.crossVectors(normal, right).normalize();
 
-/**
- * Factory for creating a curved card geometry conforming to the globe curvature.
- */
-function createCurvedCardGeometry(w, h, radius, curvatureFactor = 1.0, segX = 24, segY = 24) {
-  const geom = new THREE.PlaneGeometry(w, h, segX, segY);
-  updateCurvedGeometryVertices(geom, w, h, radius, curvatureFactor, segX, segY);
-  return geom;
+  // Basis: Local X = right, Local Y = up, Local Z = normal (radial vector pointing outward)
+  const matrix = new THREE.Matrix4().makeBasis(right, up, normal);
+  return new THREE.Quaternion().setFromRotationMatrix(matrix);
 }
 
 const CardGlobe = () => {
@@ -174,7 +146,6 @@ const CardGlobe = () => {
   const [cardCount, setCardCount] = useState(GLOBE_CONFIG.defaultCardCount);
   const [globeRadius, setGlobeRadius] = useState(GLOBE_CONFIG.defaultRadius);
   const [hasCore, setHasCore] = useState(true);
-  const [isCurved, setIsCurved] = useState(true);
 
   // Mutable refs for 60fps RAF loop
   const isPlayingRef = useRef(isPlaying);
@@ -182,7 +153,6 @@ const CardGlobe = () => {
   const cardCountRef = useRef(cardCount);
   const globeRadiusRef = useRef(globeRadius);
   const hasCoreRef = useRef(hasCore);
-  const isCurvedRef = useRef(isCurved);
 
   const globeGroupRef = useRef(null);
   const cardMeshesRef = useRef([]);
@@ -199,15 +169,12 @@ const CardGlobe = () => {
     cardCountRef.current = cardCount;
     globeRadiusRef.current = globeRadius;
     hasCoreRef.current = hasCore;
-    isCurvedRef.current = isCurved;
-  }, [isPlaying, rotationSpeed, cardCount, globeRadius, hasCore, isCurved]);
+  }, [isPlaying, rotationSpeed, cardCount, globeRadius, hasCore]);
 
-  // Update card positions and spherical curvature whenever parameters change
-  const updateGlobePositions = useCallback((count, radius, curved = true) => {
+  // Update card positions and orientations so every card is strictly perpendicular to its radius
+  const updateGlobePositions = useCallback((count, radius) => {
     const meshes = cardMeshesRef.current;
     if (!meshes.length) return;
-
-    const factor = curved ? 1.0 : 0.0;
 
     for (let i = 0; i < meshes.length; i++) {
       const mesh = meshes[i];
@@ -216,13 +183,8 @@ const CardGlobe = () => {
         const pt = getFibonacciPoint(i, count, radius);
         mesh.position.set(pt.x, pt.y, pt.z);
 
-        // Orient card tangent to sphere surface (normal points outward)
-        mesh.lookAt(pt.x * 2, pt.y * 2, pt.z * 2);
-
-        // Conform geometry to the exact curvature of the globe
-        if (mesh.userData && mesh.userData.w && mesh.userData.h) {
-          updateCurvedGeometryVertices(mesh.geometry, mesh.userData.w, mesh.userData.h, radius, factor);
-        }
+        // Strict perpendicular alignment: normal equals the radial vector
+        mesh.quaternion.copy(getCardOrientation(pt));
       } else {
         mesh.visible = false;
       }
@@ -235,8 +197,8 @@ const CardGlobe = () => {
   }, []);
 
   useEffect(() => {
-    updateGlobePositions(cardCount, globeRadius, isCurved);
-  }, [cardCount, globeRadius, isCurved, updateGlobePositions]);
+    updateGlobePositions(cardCount, globeRadius);
+  }, [cardCount, globeRadius, updateGlobePositions]);
 
   useEffect(() => {
     if (coreMeshRef.current) {
@@ -333,14 +295,8 @@ const CardGlobe = () => {
 
       const w = item.width * 1.05;
       const h = item.height * 1.05;
-      const geom = createCurvedCardGeometry(
-        w,
-        h,
-        globeRadiusRef.current,
-        isCurvedRef.current ? 1.0 : 0.0,
-        24,
-        24
-      );
+      // Flat planar card geometry: strictly perpendicular to local Z normal
+      const geom = new THREE.PlaneGeometry(w, h);
 
       const mesh = new THREE.Mesh(geom, mat);
       mesh.userData = { w, h };
@@ -349,7 +305,7 @@ const CardGlobe = () => {
     }
 
     cardMeshesRef.current = cardMeshes;
-    updateGlobePositions(cardCountRef.current, globeRadiusRef.current, isCurvedRef.current);
+    updateGlobePositions(cardCountRef.current, globeRadiusRef.current);
 
     // 8. Interactive Drag to Rotate & Momentum
     const onMouseDown = (e) => {
@@ -499,10 +455,10 @@ const CardGlobe = () => {
 
       {/* Header Overlay */}
       <div className="card-globe-header">
-        <div className="card-globe-badge">Spherical Curvature • Fibonacci Lattice</div>
+        <div className="card-globe-badge">Perpendicular Tangent Alignment • Fibonacci Lattice</div>
         <h1 className="card-globe-title">Card Globe</h1>
         <p className="card-globe-subtitle">
-          Photographic cards individually curved to match the spherical surface of the rotating globe. Drag to rotate in any direction.
+          Photographic cards placed on a Fibonacci sphere. Each image plane is strictly perpendicular to the radius drawn from the globe's center. Drag to rotate in any direction.
         </p>
       </div>
 
@@ -515,17 +471,6 @@ const CardGlobe = () => {
           title={isPlaying ? 'Pause Rotation' : 'Resume Rotation'}
         >
           {isPlaying ? '⏸ Pause' : '▶ Rotate'}
-        </button>
-
-        <div className="card-globe-hud-divider" />
-
-        {/* Spherical Curvature Toggle */}
-        <button
-          className={`card-globe-hud-btn ${isCurved ? 'active' : ''}`}
-          onClick={() => setIsCurved((prev) => !prev)}
-          title="Toggle Image Curvature (conforms image cards to sphere surface)"
-        >
-          {isCurved ? '🌐 Spherical Curve' : '⬛ Flat Cards'}
         </button>
 
         <div className="card-globe-hud-divider" />
