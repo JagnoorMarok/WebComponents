@@ -25,10 +25,18 @@ import ImageStackDemo from './components/ImageStackDemo.jsx';
 import InkRevealDemo from './components/InkRevealDemo.jsx';
 import CursorParticlesTypographyDemo from './components/CursorParticlesTypographyDemo.jsx';
 import KineticTextDemo from './components/KineticTextDemo.jsx';
+import TextLoopDemo from './components/TextLoopDemo.jsx';
+import AsciiRippleDemo from './components/AsciiRippleDemo.jsx';
+import GlitchTextDemo from './components/GlitchTextDemo.jsx';
+import EclipseDemo from './components/EclipseDemo.jsx';
 import ComponentCodeExplainer from './components/ComponentCodeExplainer.jsx';
 
 const COMPONENT_TITLES = {
   'home': 'Overview',
+  'eclipse': 'Eclipse',
+  'glitch-text': 'Glitch Text',
+  'ascii-ripple': 'ASCII Ripple',
+  'text-loop': 'Text Loop',
   'kinetic-text': 'Kinetic Text',
   'cursor-particles-typography': 'Cursor Particles Typography',
   'ink-reveal': 'Ink Reveal',
@@ -96,6 +104,30 @@ function App() {
             <span className="nav-icon">✦</span> Overview / Home
           </div>
           <div className="nav-divider" />
+          <div 
+            className={`nav-link ${activeTab === 'eclipse' ? 'active' : ''}`}
+            onClick={() => handleTabClick('eclipse')}
+          >
+            Eclipse
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'glitch-text' ? 'active' : ''}`}
+            onClick={() => handleTabClick('glitch-text')}
+          >
+            Glitch Text
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'ascii-ripple' ? 'active' : ''}`}
+            onClick={() => handleTabClick('ascii-ripple')}
+          >
+            ASCII Ripple
+          </div>
+          <div 
+            className={`nav-link ${activeTab === 'text-loop' ? 'active' : ''}`}
+            onClick={() => handleTabClick('text-loop')}
+          >
+            Text Loop
+          </div>
           <div 
             className={`nav-link ${activeTab === 'kinetic-text' ? 'active' : ''}`}
             onClick={() => handleTabClick('kinetic-text')}
@@ -288,6 +320,30 @@ function App() {
 
         {activeTab === 'home' && (
           <LandingPage onSelectComponent={(tab) => handleTabClick(tab)} />
+        )}
+
+        {activeTab === 'eclipse' && (
+          <div className="eclipse-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <EclipseDemo />
+          </div>
+        )}
+
+        {activeTab === 'glitch-text' && (
+          <div className="glitch-text-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <GlitchTextDemo />
+          </div>
+        )}
+
+        {activeTab === 'ascii-ripple' && (
+          <div className="ascii-ripple-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <AsciiRippleDemo />
+          </div>
+        )}
+
+        {activeTab === 'text-loop' && (
+          <div className="text-loop-main" style={{ width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+             <TextLoopDemo />
+          </div>
         )}
 
         {activeTab === 'kinetic-text' && (

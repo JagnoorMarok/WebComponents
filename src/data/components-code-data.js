@@ -25,8 +25,213 @@ import imageStackRaw from "@/components/ui/image-stack.jsx?raw";
 import inkRevealRaw from "@/components/ui/ink-reveal.jsx?raw";
 import cursorParticlesTypographyRaw from "@/components/ui/cursor-driven-particles-typography.jsx?raw";
 import kineticTextRaw from "@/components/ui/kinetic-text.jsx?raw";
+import textLoopRaw from "@/components/ui/text-loop.jsx?raw";
+import asciiRippleRaw from "@/components/ui/ascii-ripple.jsx?raw";
+import glitchTextRaw from "@/components/ui/glitch-text.jsx?raw";
+import eclipseRaw from "@/components/ui/eclipse.jsx?raw";
 
 export const COMPONENTS_CODE_DATA = {
+  "eclipse": {
+    title: "Eclipse",
+    category: "Backgrounds & WebGL Shaders",
+    badge: "WEBGL / SHADER",
+    author: "React Bits Pro",
+    description: "A turbulent spectral corona burning around a dark eclipse. Features procedural Fractional Brownian Motion (fBm) solar prominences, multi-octave radial ray streamers, chromatic aberration spectral diffraction, intense limb rim light, and interactive pointer parallax.",
+    howItWorks: [
+      {
+        title: "1. Organic Fluid Occultation Core",
+        desc: "Instead of a static rigid circle, the dark celestial body exhibits viscoelastic fluid dynamics. Surface tension capillary waves, micro-plasma turbulence, and directional cursor attraction dynamically deform the edge, causing the eclipse to stretch, bulge, and ripple towards the mouse pointer like a droplet of ferrofluid.",
+      },
+      {
+        title: "2. Procedural Turbulent Plasma (fBm)",
+        desc: "Plasma streamers and flaring prominences are generated using multi-octave Fractional Brownian Motion with coordinate rotation. Noise is computed across both polar space (theta * angularFrequency) and radial distance offset by time, creating solar plasma continuously rushing outward into deep space.",
+      },
+      {
+        title: "3. Spectral Chromatic Dispersion",
+        desc: "To reproduce authentic spectral corona optics, the turbulence sampling coordinates are spatially split along the angular axis by u_spectralShift * (dist - coreRadius). This shifts red, green, and blue wave components differently, resulting in shimmering chromatic rainbow diffraction fringing on flare edges.",
+      },
+      {
+        title: "4. Diamond Rim & Limb Brightening",
+        desc: "Right along the boundary where the dark sphere meets the corona, an exponential gaussian spike exp(-pow((dist - coreRadius)/width, 2.0)) is calculated. This creates the famous blinding 'diamond ring' effect, emitting brilliant white-hot photons from the solar limb.",
+      },
+      {
+        title: "5. Responsive Canvas & Pointer Parallax",
+        desc: "A ResizeObserver dynamically sets canvas width and height clamped to a maximum device pixel ratio of 2.0 to ensure 60fps performance on high-DPI displays. Subtle pointer tracking smoothly offsets the eclipse center with linear damping, giving a floating cosmic perspective.",
+      },
+    ],
+    props: [
+      {
+        name: "coreRadius",
+        type: "number",
+        default: "0.28",
+        desc: "Normalized radius of the central dark occulting disc (0.15 to 0.45).",
+      },
+      {
+        name: "liquidity",
+        type: "number",
+        default: "1.0",
+        desc: "Strength of organic fluid droplet deformation, surface tension waves, and mouse pointer pull (0.0 to 2.5).",
+      },
+      {
+        name: "coronaSize",
+        type: "number",
+        default: "0.45",
+        desc: "Radial reach and atmospheric falloff distance of the outer corona rays.",
+      },
+      {
+        name: "turbulence",
+        type: "number",
+        default: "1.0",
+        desc: "Frequency and chaos multiplier for solar prominence filaments.",
+      },
+      {
+        name: "speed",
+        type: "number",
+        default: "1.0",
+        desc: "Animation playback speed for plasma streamer flows.",
+      },
+      {
+        name: "intensity",
+        type: "number",
+        default: "1.2",
+        desc: "Overall brightness multiplier of the corona rays and plasma flares.",
+      },
+      {
+        name: "rimIntensity",
+        type: "number",
+        default: "1.6",
+        desc: "Peak brightness of the razor-sharp diamond rim flare on the eclipse edge.",
+      },
+      {
+        name: "spectralShift",
+        type: "number",
+        default: "0.8",
+        desc: "Strength of chromatic aberration and rainbow dispersion.",
+      },
+      {
+        name: "colorMode",
+        type: "number",
+        default: "0",
+        desc: "Color theme palette: 0 (Spectral Rainbow), 1 (Solar Gold), 2 (Ultraviolet), 3 (Cryo Cyan), 4 (Blood Moon).",
+      },
+      {
+        name: "interactive",
+        type: "boolean",
+        default: "true",
+        desc: "Enables smooth pointer parallax pull and corona deflection.",
+      },
+      {
+        name: "particleDensity",
+        type: "number",
+        default: "0.5",
+        desc: "Density of twinkling background star dust particles.",
+      },
+      {
+        name: "children",
+        type: "ReactNode",
+        default: "null",
+        desc: "Optional overlay content (hero title, CTA, badges) rendered on top of the canvas.",
+      },
+      {
+        name: "className",
+        type: "string",
+        default: "''",
+        desc: "Additional CSS class names applied to the container element.",
+      },
+    ],
+    techStack: ["React", "WebGL", "GLSL Shaders", "Canvas 2D (Fallback)", "CSS"],
+    dependencies: ["react"],
+    usageSnippet: `import { Eclipse } from '@/components/ui/eclipse';
+
+export default function HeroSection() {
+  return (
+    <div className="relative w-full h-[600px] bg-black">
+      <Eclipse
+        coreRadius={0.28}
+        coronaSize={0.50}
+        turbulence={1.2}
+        speed={1.0}
+        intensity={1.3}
+        rimIntensity={1.8}
+        spectralShift={1.0}
+        colorMode={0}
+        interactive={true}
+      >
+        <div className="flex flex-col items-center justify-center h-full text-white">
+          <h1 className="text-5xl font-bold tracking-widest">ASTRAL</h1>
+          <p className="text-gray-400 mt-2">Occultation & Beyond</p>
+        </div>
+      </Eclipse>
+    </div>
+  );
+}`,
+    componentCode: eclipseRaw,
+  },
+  "glitch-text": {
+    title: "Glitch Text",
+    category: "Canvas 2D & Interactive Typography",
+    badge: "CANVAS GLITCH",
+    author: "React Bits Pro",
+    description: "Interactive canvas-based text with per-character cursor-proximity RGB channel-split ghost layers, sticky glitch persistence after cursor leaves, sweeping scanline bars, and per-frame jitter shake. Entirely zero-dependency — pure Canvas 2D API.",
+    howItWorks: [
+      {
+        title: "1. Glyph Shard Layout Engine",
+        desc: "The component splits the input string into individual characters and measures each glyph's pixel width on a temporary offscreen canvas using ctx.measureText(). Characters are laid out centred with configurable letter-spacing, producing an array of 'shard' objects each carrying (x, y, width, glitchTimer, glitchX1, glitchX2, scanY) state.",
+      },
+      {
+        title: "2. Cursor Proximity Detection",
+        desc: "Every animation frame computes the Euclidean distance from the cursor to each glyph centroid. When dist < cursorRadius, the shard's glitchTimer is set to stickyFrames (default 22). When the cursor leaves, the timer decrements each frame — keeping the glitch effect alive for ~22 frames — before silently deactivating. This produces the 'sticky' feeling described in the React Bits Pro spec.",
+      },
+      {
+        title: "3. RGB Channel Split via Composite Layers",
+        desc: "Each glitching glyph is rendered three times per frame. First, the two ghost copies are drawn with ctx.globalCompositeOperation = 'lighter' (additive blending) in the configured glitchColor1 (#ff003c, red) and glitchColor2 (#00f5ff, cyan) at randomised horizontal offsets (±glitchIntensity px). The lighter composite mode makes overlapping ghost colours add together, creating authentic analog RGB separation artifacts.",
+      },
+      {
+        title: "4. Animated Scanline Bar",
+        desc: "Each active shard maintains a scanY counter that increments by (3 + random * 4) each frame and wraps at fontSize * 1.4. A horizontal white rectangle is drawn at that y-position over the glyph bounding box at low opacity (default 0.18), simulating a CRT horizontal sync anomaly sweeping across the corrupted character.",
+      },
+      {
+        title: "5. Base Text Jitter & CRT Overlay",
+        desc: "The authoritative base text is rendered last (on top) with a ±2.5px / ±1.5px random position shake while glitching, preventing it from being fully obscured by the ghost layers. The demo wraps the canvas in a div with a CSS repeating-linear-gradient scanline overlay and radial vignette, reinforcing the broken-monitor aesthetic without any JS overhead.",
+      },
+    ],
+    props: [
+      { name: "text", type: "string", default: "'GLITCH'", desc: "The display text. Split per-character into independent glyph shards." },
+      { name: "fontSize", type: "number", default: "120", desc: "Font size in pixels. Canvas height auto-scales to 2.2× this value." },
+      { name: "fontFamily", type: "string", default: "'Courier New', monospace", desc: "CSS font-family stack applied to the canvas context." },
+      { name: "color", type: "string", default: "'#ffffff'", desc: "Base text fill colour." },
+      { name: "glitchColor1", type: "string", default: "'#ff003c'", desc: "First RGB split ghost colour (additive-blended)." },
+      { name: "glitchColor2", type: "string", default: "'#00f5ff'", desc: "Second RGB split ghost colour (additive-blended)." },
+      { name: "cursorRadius", type: "number", default: "180", desc: "Pixel radius around each glyph centroid within which cursor proximity activates glitch." },
+      { name: "glitchIntensity", type: "number", default: "28", desc: "Maximum horizontal displacement (px) of each ghost channel copy." },
+      { name: "stickyFrames", type: "number", default: "22", desc: "Number of animation frames the glitch persists after cursor leaves radius." },
+      { name: "scanlineOpacity", type: "number", default: "0.18", desc: "Opacity of the sweeping horizontal scanline bar drawn over each glitching glyph." },
+      { name: "letterSpacing", type: "number", default: "0.06", desc: "Additional inter-glyph gap as a fraction of fontSize." },
+    ],
+    techStack: ['Canvas 2D API', 'Offscreen Canvas measureText', 'RGB Composite Additive', 'ctx.setTransform Reset', 'requestAnimationFrame'],
+    dependencies: ['react'],
+    usageSnippet: `import GlitchText from "@/components/ui/glitch-text";
+
+export default function App() {
+  return (
+    <GlitchText
+      text="GLITCH"
+      fontSize={120}
+      fontFamily="'Courier New', monospace"
+      color="#ffffff"
+      glitchColor1="#ff003c"
+      glitchColor2="#00f5ff"
+      cursorRadius={180}
+      glitchIntensity={28}
+      stickyFrames={22}
+      scanlineOpacity={0.18}
+    />
+  );
+}`,
+    componentCode: glitchTextRaw,
+  },
+
+
   "constellation-field": {
     title: "Constellation Field",
     category: "Canvas 2D & Particle Physics",
@@ -529,6 +734,165 @@ export default function HeroSection() {
       { name: "peakWeight", type: "number", default: "900", desc: "Peak font weight of the directly hovered character" },
       { name: "hoverPadding", type: "string", default: "'calc(1em / 14)'", desc: "Horizontal expansion padding on hover" },
       { name: "liftDistance", type: "string", default: "'-0.06em'", desc: "Vertical micro-lift displacement on hover" },
+    ],
+  },
+
+  "text-loop": {
+    title: "Text Loop",
+    category: "Parametric SVG & Kinetic Typography",
+    badge: "TEXT ANIMATION",
+    author: "React Bits",
+    description: "Continuous typographic motion along parametric SVG paths. Leverages dual-textPath offset wrapping and GSAP linear velocity ticker for seamless, infinite looping without stutter or visible seams.",
+    howItWorks: [
+      {
+        title: "1. Dual-<textPath> Offset Wrapping",
+        desc: "Employs two duplicate <textPath> elements referencing the same SVG <path id='...'>. While the primary textPath advances by offset, the secondary textPath mirrors it at offset - length (or offset + length). This guarantees continuous, seamless infinite wrapping along both closed and open curves without pop-in or seams.",
+      },
+      {
+        title: "2. Live Geometry Measurement & Repetition Calculation",
+        desc: "Before animation commences, the SVG path length is computed via pathEl.getTotalLength() while an off-screen <text className='text-loop-measure'> determines character phrase width via getComputedTextLength(). The component calculates repetitions = Math.max(1, Math.round(totalPathLength / textLength)) and sets SVG textLength and lengthAdjust='spacing' for exact geometric synchronization.",
+      },
+      {
+        title: "3. Parametric SVG Shape Generators",
+        desc: "Features five distinct parametric path generators (wave, circle, infinity, arch, and line). Curves are formulated using SVG cubic Bézier (C), quadratic Bézier (Q), smooth quadratic (T), and arc (A) commands, dynamically tuned by curviness and room boundaries to prevent clipping.",
+      },
+      {
+        title: "4. Linear Velocity GSAP Driver",
+        desc: "Drives the offset scalar using GSAP's precision ticker (gsap.to(state, { offset, duration: length / speed, ease: 'none', repeat: -1 })). This decouples frame rate from device refresh rate, ensuring constant linear pixel-per-second velocity across 60Hz, 120Hz, and variable-rate displays.",
+      },
+      {
+        title: "5. Hover State Decoupling & Motion Preferences",
+        desc: "Listens for pointer hover events to gracefully pause and resume the GSAP tween (tween.pause(), tween.resume()). Evaluates prefers-reduced-motion: reduce to automatically freeze translation for accessibility while keeping typographic curves intact.",
+      },
+      {
+        title: "6. Dynamic Ribbon Vector Stroke Underlay",
+        desc: "Renders a vector stroke directly underneath the typography along the exact same Bézier trajectory with configurable strokeWidth, ribbonColor, strokeLinecap='round', and strokeLinejoin='round', producing a high-contrast ribbon track for the sliding letters.",
+      },
+    ],
+    techStack: ["React", "SVG textPath", "Bézier Curves", "GSAP Ticker", "Font Geometry API"],
+    dependencies: ["react", "react-dom", "gsap"],
+    usageSnippet: `import { TextLoop } from "@/components/ui/text-loop";
+
+export default function HeroSection() {
+  return (
+    <div style={{ width: "100%", height: "450px", background: "#050505" }}>
+      <TextLoop
+        text="React ✦ Bits"
+        shape="wave"
+        speed={90}
+        curviness={90}
+        fontSize={46}
+        ribbon={true}
+        ribbonColor="#5227FF"
+        color="#FFFFFF"
+        pauseOnHover={true}
+      />
+    </div>
+  );
+}`,
+    componentCode: textLoopRaw,
+    props: [
+      { name: "text", type: "string", default: "'React ✦ Bits'", desc: "Text phrase repeated along the SVG path" },
+      { name: "shape", type: "'wave' | 'circle' | 'infinity' | 'arch' | 'line'", default: "'wave'", desc: "Parametric geometry trajectory" },
+      { name: "path", type: "string", default: "undefined", desc: "Optional custom SVG path 'd' string overriding built-in shapes" },
+      { name: "speed", type: "number", default: "90", desc: "Linear scroll velocity along the path in pixels per second" },
+      { name: "direction", type: "'forward' | 'reverse'", default: "'forward'", desc: "Direction of text translation along path" },
+      { name: "separator", type: "string", default: "'✦'", desc: "Separator glyph injected between text repetitions" },
+      { name: "curviness", type: "number", default: "90", desc: "Curvature amplitude controlling wave height or arc radius" },
+      { name: "fontSize", type: "number", default: "46", desc: "Font size in pixels for repeated characters" },
+      { name: "fontWeight", type: "number | string", default: "800", desc: "Typographic weight for SVG glyphs" },
+      { name: "letterSpacing", type: "number", default: "2", desc: "Letter spacing in pixels between characters" },
+      { name: "uppercase", type: "boolean", default: "true", desc: "Transforms text to uppercase when true" },
+      { name: "color", type: "string", default: "'#ffffff'", desc: "Fill color of typography characters" },
+      { name: "ribbon", type: "boolean", default: "true", desc: "Renders a background stroke ribbon along the trajectory" },
+      { name: "ribbonColor", type: "string", default: "'#5227FF'", desc: "Stroke color of the background ribbon track" },
+      { name: "ribbonWidth", type: "number", default: "86", desc: "Width in pixels of the background ribbon stroke" },
+      { name: "pauseOnHover", type: "boolean", default: "true", desc: "Pauses translation animation when cursor hovers over element" },
+      { name: "onMetricsChange", type: "function", default: "null", desc: "Callback receiving { length, reps } upon geometry computation" },
+    ],
+  },
+
+  "ascii-ripple": {
+    title: "ASCII Ripple",
+    category: "Canvas 2D & Fluid Physics",
+    badge: "LIQUID ASCII",
+    author: "React Bits Pro",
+    description: "A page of monospace text that behaves like a liquid surface. Pointer drops and drags send simulated 2D wave fronts through the typographic grid, bending words through optical refraction and blooming into heavier ASCII glyphs.",
+    howItWorks: [
+      {
+        title: "1. 2D Finite-Difference Discrete Wave Equation",
+        desc: "Simulates wave propagation across a discrete heightfield grid using a 2D discrete wave equation. In each integration step (dt = 1/90s), each cell computes its 4-neighbor Laplacian (laplacian = cur[idx-1] + cur[idx+1] + cur[idx-w] + cur[idx+w] - 4*cur[idx]) and integrates with damping and viscosity: next[idx] = 0.996*cur[idx] + (cur[idx] - prev[idx])*(1 - damping)*mask[idx] + (speed + viscosity)*laplacian. Buffer swapping (prev, cur, next) maintains high cache coherence.",
+      },
+      {
+        title: "2. Bilinear Grid Sampling & Optical Normal Slopes",
+        desc: "At every text cell coordinate (c * charW, r * lineH), the simulation field is sampled with bilinear interpolation (fractional fx, fy across grid vertices). Simultaneously, central differences calculate spatial derivatives: gradX = (cur[idx+1] - cur[idx-1]) * 0.5 and gradY = (cur[idx+w] - cur[idx-w]) * 0.5, yielding the instantaneous surface slope magnitude and 2D refraction normal vector.",
+      },
+      {
+        title: "3. Dynamic Refraction & Typographic Displacement",
+        desc: "When waves pass over text, the optical gradient vector displaces character sampling coordinates: refrCol = clamp(col + gradX * refraction * 2) and refrRow = clamp(row + gradY * refraction). Characters from adjacent positions are pulled and sheared into the wave trough and crest, accurately simulating light refraction through undulating water.",
+      },
+      {
+        title: "4. Intensity-Driven ASCII Glyph Scrambling & Blooming",
+        desc: "Wave energy is evaluated as intensity = clamp01((|height| * sensitivity + slopeMag * slopeGain - 0.12) * 1.14). If intensity exceeds the resting threshold, characters bloom from light resting glyphs into heavy ASCII density ramps (e.g. '·.,:;-~=+*%#@' or ' ░▒▓█'). A spatio-temporal noise hash introduces organic jitter and granular dithering across wavefront edges.",
+      },
+      {
+        title: "5. Dual Crest/Trough Color Ramping & Vignette Compositing",
+        desc: "Pre-computes 24-step color interpolation ramps for crests (upwards tint toward rippleColor) and troughs (downwards tint toward troughColor). Resting text remains muted at textOpacity (default 15%), while disturbed cells pop into luminous clarity. A 4-sided linear gradient vignette smoothly dissolves outer edges into the container background with destination-out compositing.",
+      },
+      {
+        title: "6. Pointer Impulse Injection & Precipitation Dynamics",
+        desc: "Tracks mouse clicks and pointer drags to deposit smooth cubic bell impulses: delta = strength * s * s * (3 - 2 * s) where s = 1 - (dx^2 + dy^2)/radius^2. Rapid pointer movement interpolates intermediate impulse drops to prevent stepping. When idle, an ambient precipitation engine deposits random rain drops across the grid, keeping the liquid surface gently undulating.",
+      },
+    ],
+    techStack: ["React", "HTML5 Canvas 2D", "Finite Difference Wave PDE", "Bilinear Interpolation", "Optical Refraction", "ASCII Shaders"],
+    dependencies: ["react", "react-dom"],
+    usageSnippet: `import { AsciiRipple } from "@/components/ui/ascii-ripple";
+
+export default function LiquidTypography() {
+  return (
+    <div style={{ width: "100%", height: "550px", background: "#0c0d14" }}>
+      <AsciiRipple
+        fontSize={16}
+        lineHeight={1.2}
+        speed={0.55}
+        viscosity={0.4}
+        damping={0.045}
+        refraction={4}
+        edges="absorb"
+        textColor="#f5f5f4"
+        rippleColor="#ffffff"
+        troughColor="#ad57ff"
+      />
+    </div>
+  );
+}`,
+    componentCode: asciiRippleRaw,
+    props: [
+      { name: "text", type: "string", default: "Passage prose", desc: "Monospace narrative text filling the liquid grid" },
+      { name: "chars", type: "string", default: "'·.,:;-~=+*%#@'", desc: "ASCII density glyph palette from lightest to heaviest" },
+      { name: "fontSize", type: "number", default: "16", desc: "Font size in pixels for grid cells" },
+      { name: "lineHeight", type: "number", default: "1.2", desc: "Line height as multiplier of fontSize" },
+      { name: "fontFamily", type: "string", default: "ui-monospace stack", desc: "Monospace CSS font family stack" },
+      { name: "textColor", type: "string", default: "'#f5f5f4'", desc: "Resting text color when undisturbed" },
+      { name: "rippleColor", type: "string", default: "'#ffffff'", desc: "Tint color for wave crests (positive height displacement)" },
+      { name: "troughColor", type: "string", default: "'#ad57ff'", desc: "Tint color for wave troughs (negative height displacement)" },
+      { name: "backgroundColor", type: "string", default: "'transparent'", desc: "Canvas background fill" },
+      { name: "textOpacity", type: "number", default: "0.15", desc: "Resting text opacity (0.0 to 1.0)" },
+      { name: "resolution", type: "number", default: "3", desc: "Simulation grid sub-cells per text row (1 to 4)" },
+      { name: "speed", type: "number", default: "0.55", desc: "Wave propagation velocity coefficient" },
+      { name: "viscosity", type: "number", default: "0.4", desc: "Surface viscosity smoothing sharp wavelets into softer swells" },
+      { name: "damping", type: "number", default: "0.045", desc: "Energy dissipation per simulation step" },
+      { name: "edges", type: "'absorb' | 'reflect'", default: "'absorb'", desc: "Boundary condition for perimeter waves" },
+      { name: "dropStrength", type: "number", default: "1.2", desc: "Impulse amplitude deposited on click/tap" },
+      { name: "dropRadius", type: "number", default: "26", desc: "Impulse radial footprint in pixels" },
+      { name: "dragStrength", type: "number", default: "0.3", desc: "Continuous impulse deposited by pointer trail" },
+      { name: "rain", type: "number", default: "0", desc: "Random precipitation drops per second while idle" },
+      { name: "sensitivity", type: "number", default: "2.2", desc: "Sensitivity mapping wave height to glyph intensity" },
+      { name: "slopeGain", type: "number", default: "1.0", desc: "Gain multiplier mapping surface gradient to intensity" },
+      { name: "refraction", type: "number", default: "4.0", desc: "Optical refraction displacement distance in grid cells" },
+      { name: "scramble", type: "number", default: "1.0", desc: "Propensity of disturbed cells to swap to ASCII glyphs" },
+      { name: "vignette", type: "number", default: "0.6", desc: "Fractional width of perimeter fadeout gradient" },
+      { name: "interactive", type: "boolean", default: "true", desc: "Enables pointer move, drag, and click disturbances" },
     ],
   },
 
